@@ -9,6 +9,7 @@ import routes from '#routes/index.js';
 import errorMiddleware from '#middleware/error.middleware.js';
 import { setupSwagger } from '#docs/swagger.js';
 import appConfig from '#config/index.js';
+
 // Load environment variables
 const envFile = `.env.${process.env.NODE_ENV || 'local'}`;
 config({ path: envFile });
@@ -68,4 +69,5 @@ export const shutdownServer = (server) => {
 process.on('SIGINT', () => shutdownServer(app));
 process.on('SIGTERM', () => shutdownServer(app));
 
-// TODO: Add health check endpoint (e.g., /health) for monitoring
+// Export the Express app as the default for Vercel
+export default app;
