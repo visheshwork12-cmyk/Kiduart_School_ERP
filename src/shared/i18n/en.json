@@ -1,0 +1,18 @@
+{
+  "greeting": "Hello, {{name}}!",
+  "auth": {
+    "loginSuccess": "Login successful",
+    "loginFailed": "Invalid email or password",
+    "unauthorized": "You are not authorized to access this resource"
+  },
+  "errors": {
+    "not_found": "The requested resource was not found",
+    "internal_error": "An unexpected error occurred",
+    "validation_failed": "Validation failed for request"
+  },
+  "success": {
+    "operation_completed": "Operation completed successfully",
+    "created": "Resource created successfully",
+    "updated": "Resource updated successfully"
+  }
+}

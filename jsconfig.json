@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "#config/*": ["src/config/*"],
+      "#lib/*": ["src/lib/*"],
+      "#middleware/*": ["src/middleware/*"],
+      "#api/*": ["src/api/*"],
+      "#services/*": ["src/services/*"],
+      "#shared/*": ["src/shared/*"],
+      "#models/*": ["src/models/*"],
+      "#repositories/*": ["src/repositories/*"],
+      "#jobs/*": ["src/jobs/*"],
+      "#templates/*": ["src/templates/*"],
+      "#docs/*": ["src/docs/*"]
+    },
+    "module": "esnext",
+    "target": "esnext"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
