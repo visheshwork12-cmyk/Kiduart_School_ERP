@@ -46,14 +46,13 @@ export const setupSwagger = (app) => {
       res.json(swaggerSpec);
     });
 
-    // Setup Swagger UI
+    // Setup Swagger UI with inline spec
     app.use(
       '/api-docs',
       swaggerUi.serve,
-      swaggerUi.setup(null, {
+      swaggerUi.setup(swaggerSpec, {
         swaggerOptions: {
           persistAuthorization: true,
-          url: '/api-docs/swagger.json', // Use local JSON endpoint
           validatorUrl: null, // Disable external validator
         },
       })
