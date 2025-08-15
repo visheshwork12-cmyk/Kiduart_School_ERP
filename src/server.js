@@ -9,6 +9,7 @@ import routes from '#routes/index.js';
 import errorMiddleware from '#middleware/error.middleware.js';
 import { setupSwagger } from '#docs/swagger.js';
 import appConfig from '#config/index.js';
+import { fileURLToPath } from 'url';
 import path from 'path';
 
 // Load environment variables
@@ -17,6 +18,9 @@ config({ path: envFile });
 
 // Initialize Express app
 const app = express();
+
+// Derive __dirname for ESM
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Apply global middlewares
 app.use(helmet());
