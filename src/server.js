@@ -9,6 +9,7 @@ import routes from '#routes/index.js';
 import errorMiddleware from '#middleware/error.middleware.js';
 import { setupSwagger } from '#docs/swagger.js';
 import appConfig from '#config/index.js';
+import path from 'path';
 
 // Load environment variables
 const envFile = `.env.${process.env.NODE_ENV || 'local'}`;
@@ -18,12 +19,18 @@ config({ path: envFile });
 const app = express();
 
 // Apply global middlewares
-app.use(helmet()); // Security headers
-app.use(cors()); // Enable CORS
-app.use(compression()); // Compress responses
-app.use(express.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(morganMiddleware); // HTTP request logging
+app.use(helmet());
+app.use(cors());
+app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morganMiddleware);
+
+// Serve Swagger UI static assets
+app.use(
+  '/api-docs',
+  express.static(path.join(__dirname, '../node_modules/swagger-ui-dist'))
+);
 
 // Setup Swagger documentation
 setupSwagger(app);
@@ -69,5 +76,4 @@ export const shutdownServer = (server) => {
 process.on('SIGINT', () => shutdownServer(app));
 process.on('SIGTERM', () => shutdownServer(app));
 
-// Export the Express app as the default for Vercel
 export default app;
