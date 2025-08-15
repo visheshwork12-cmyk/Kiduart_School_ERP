@@ -5,10 +5,8 @@ import path from 'path';
 import pkg from '../../package.json' with { type: 'json' };
 import logger from '#config/logger.js';
 
-// Get the directory name for resolving file paths
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Swagger definition for OpenAPI 3.0
 const swaggerDefinition = {
   openapi: '3.0.3',
   info: {
@@ -28,11 +26,7 @@ const swaggerDefinition = {
   ],
   components: {
     securitySchemes: {
-      bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
+      bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
     },
   },
   security: [{ bearerAuth: [] }],
@@ -47,13 +41,20 @@ export const swaggerSpec = swaggerJSDoc(options);
 
 export const setupSwagger = (app) => {
   try {
+    // Serve Swagger JSON specification
+    app.get('/api-docs/swagger.json', (req, res) => {
+      res.json(swaggerSpec);
+    });
+
+    // Setup Swagger UI
     app.use(
       '/api-docs',
       swaggerUi.serve,
-      swaggerUi.setup(swaggerSpec, {
+      swaggerUi.setup(null, {
         swaggerOptions: {
           persistAuthorization: true,
-          url: '/api-docs/swagger.json',
+          url: '/api-docs/swagger.json', // Use local JSON endpoint
+          validatorUrl: null, // Disable external validator
         },
       })
     );

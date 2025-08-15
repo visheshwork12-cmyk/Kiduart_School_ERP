@@ -7,17 +7,22 @@ import logger from '#config/logger.js';
 import morganMiddleware from '#config/morgan.js';
 import routes from '#routes/index.js';
 import errorMiddleware from '#middleware/error.middleware.js';
-import { setupSwagger, swaggerSpec } from '#docs/swagger.js';
+import { setupSwagger } from '#docs/swagger.js';
 import appConfig from '#config/index.js';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
+// Load environment variables
 const envFile = `.env.${process.env.NODE_ENV || 'local'}`;
 config({ path: envFile });
 
+// Initialize Express app
 const app = express();
+
+// Derive __dirname for ESM
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Apply global middlewares
 app.use(helmet());
 app.use(cors());
 app.use(compression());
@@ -31,23 +36,27 @@ app.use(
   express.static(path.join(__dirname, '../node_modules/swagger-ui-dist'))
 );
 
-// Serve Swagger JSON specification
-app.get('/api-docs/swagger.json', (req, res) => {
-  res.json(swaggerSpec);
-});
-
 // Setup Swagger documentation
 setupSwagger(app);
 
+// Mount routes
 app.use('/', routes);
+
+// Apply global error handling middleware
 app.use(errorMiddleware);
 
+/**
+ * Start the server
+ * @param {number} port - Port to listen on
+ * @returns {Promise<http.Server>} - Server instance
+ */
 export const startServer = async (port = appConfig.port) => {
   return new Promise((resolve, reject) => {
     const server = app.listen(port, () => {
       logger.info(`Server running on port ${port} in ${appConfig.env} mode`);
       resolve(server);
     });
+
     server.on('error', (error) => {
       logger.error(`Server startup error: ${error.message}`);
       reject(error);
@@ -55,6 +64,10 @@ export const startServer = async (port = appConfig.port) => {
   });
 };
 
+/**
+ * Graceful shutdown handler
+ * @param {http.Server} server - Server instance
+ */
 export const shutdownServer = (server) => {
   logger.info('Received shutdown signal. Closing server...');
   server.close(() => {
@@ -63,6 +76,7 @@ export const shutdownServer = (server) => {
   });
 };
 
+// Handle process termination signals
 process.on('SIGINT', () => shutdownServer(app));
 process.on('SIGTERM', () => shutdownServer(app));
 
