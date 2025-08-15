@@ -6,8 +6,8 @@ import path from 'path';
 import logger from '#config/logger.js';
 import { LANGUAGES } from '#shared/constants/index.js';
 
-import en from '#shared/i18n/en.json' assert { type: 'json' };
-import hi from '#shared/i18n/hi.json' assert { type: 'json' };
+import en from '#shared/i18n/en.json' with { type: 'json' };
+import hi from '#shared/i18n/hi.json' with { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
