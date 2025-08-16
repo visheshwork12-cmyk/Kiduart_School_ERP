@@ -41,27 +41,79 @@ export const swaggerSpec = swaggerJSDoc(options);
 
 export const setupSwagger = (app) => {
   try {
-    // ✅ FIXED: Serve JSON spec endpoint
+    // Serve JSON spec endpoint
     app.get('/api-docs/swagger.json', (req, res) => {
       res.setHeader('Content-Type', 'application/json');
       res.json(swaggerSpec);
     });
 
-    // ✅ FIXED: Use only swaggerUi.setup() with proper configuration
-    app.use(
-      '/api-docs',
-      swaggerUi.serve,
-      swaggerUi.setup(swaggerSpec, {
-        swaggerOptions: {
-          persistAuthorization: true,
-          validatorUrl: null,
-          url: '/api-docs/swagger.json', // ✅ Point to our JSON endpoint
-        },
-        customSiteTitle: 'School ERP API Documentation',
-        customCss: '.swagger-ui .topbar { display: none }', // Optional: hide topbar
-      })
-    );
-    
+    // ✅ SOLUTION: Use CDN assets for Vercel
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    if (isProduction) {
+      // CDN-based setup for production/Vercel
+      const customHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>School ERP API Documentation</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css" />
+  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.10.5/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.10.5/favicon-16x16.png" sizes="16x16" />
+  <style>
+    html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+    *, *:before, *:after { box-sizing: inherit; }
+    body { margin:0; background: #fafafa; }
+    .swagger-ui .topbar { display: none; }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      const ui = SwaggerUIBundle({
+        url: '/api-docs/swagger.json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        persistAuthorization: true,
+        validatorUrl: null
+      });
+    };
+  </script>
+</body>
+</html>`;
+
+      app.get('/api-docs', (req, res) => {
+        res.setHeader('Content-Type', 'text/html');
+        res.send(customHtml);
+      });
+    } else {
+      // Local development - use swagger-ui-express normally
+      app.use(
+        '/api-docs',
+        swaggerUi.serve,
+        swaggerUi.setup(swaggerSpec, {
+          swaggerOptions: {
+            persistAuthorization: true,
+            validatorUrl: null,
+            url: '/api-docs/swagger.json',
+          },
+          customSiteTitle: 'School ERP API Documentation',
+        })
+      );
+    }
+
     logger.info('✅ Swagger UI mounted at /api-docs');
   } catch (error) {
     logger.error(`Swagger setup error: ${error.message}`);

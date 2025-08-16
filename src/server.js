@@ -23,30 +23,31 @@ const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Apply global middlewares
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
+      imgSrc: ["'self'", "data:", "https:", "https://unpkg.com"],
+      connectSrc: ["'self'", "https://unpkg.com"],
+    },
+  },
+}));
+
 app.use(cors());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morganMiddleware);
 
-// // Serve custom swagger-initializer.js first
-// app.use(
-//   '/api-docs/swagger-initializer.js',
-//   express.static(path.join(__dirname, '../public/swagger-initializer.js'))
-// );
-
-// // Serve Swagger UI static assets
-// app.use(
-//   '/api-docs',
-//   express.static(path.join(__dirname, '../node_modules/swagger-ui-dist'))
-// );
-
 // Setup Swagger documentation
 setupSwagger(app);
 
 // Mount routes
 app.use('/', routes);
+
+
 
 // Apply global error handling middleware
 app.use(errorMiddleware);
