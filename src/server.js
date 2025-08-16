@@ -30,17 +30,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morganMiddleware);
 
-// Serve Swagger UI static assets
-app.use(
-  '/api-docs',
-  express.static(path.join(__dirname, '../node_modules/swagger-ui-dist'))
-);
+// // Serve custom swagger-initializer.js first
+// app.use(
+//   '/api-docs/swagger-initializer.js',
+//   express.static(path.join(__dirname, '../public/swagger-initializer.js'))
+// );
 
-// Serve custom swagger-initializer.js
-app.use(
-  '/api-docs/swagger-initializer.js',
-  express.static(path.join(__dirname, './public/swagger-initializer.js'))
-);
+// // Serve Swagger UI static assets
+// app.use(
+//   '/api-docs',
+//   express.static(path.join(__dirname, '../node_modules/swagger-ui-dist'))
+// );
 
 // Setup Swagger documentation
 setupSwagger(app);

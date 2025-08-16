@@ -1,0 +1,6 @@
+2025-08-16 13:54:22 [[32MINFO[39M]: ✅ Swagger UI mounted at /api-docs
+2025-08-16 13:54:22 [[32MINFO[39M]: 🌍 i18n initialized with languages: en, hi
+2025-08-16 13:54:22 [[32MINFO[39M]: MongoDB connection established
+2025-08-16 13:54:22 [[32MINFO[39M]: ✅ MongoDB connected: localhost
+2025-08-16 13:54:24 [[32MINFO[39M]: ✅ Redis connected
+2025-08-16 13:54:24 [[32MINFO[39M]: Server running on port 3000 in local mode

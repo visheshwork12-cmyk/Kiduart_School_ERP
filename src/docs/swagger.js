@@ -41,12 +41,13 @@ export const swaggerSpec = swaggerJSDoc(options);
 
 export const setupSwagger = (app) => {
   try {
-    // Serve Swagger JSON specification for debugging
+    // ✅ FIXED: Serve JSON spec endpoint
     app.get('/api-docs/swagger.json', (req, res) => {
+      res.setHeader('Content-Type', 'application/json');
       res.json(swaggerSpec);
     });
 
-    // Setup Swagger UI with inline spec
+    // ✅ FIXED: Use only swaggerUi.setup() with proper configuration
     app.use(
       '/api-docs',
       swaggerUi.serve,
@@ -54,10 +55,14 @@ export const setupSwagger = (app) => {
         swaggerOptions: {
           persistAuthorization: true,
           validatorUrl: null,
+          url: '/api-docs/swagger.json', // ✅ Point to our JSON endpoint
         },
+        customSiteTitle: 'School ERP API Documentation',
+        customCss: '.swagger-ui .topbar { display: none }', // Optional: hide topbar
       })
     );
-    logger.info('Swagger UI mounted at /api-docs');
+    
+    logger.info('✅ Swagger UI mounted at /api-docs');
   } catch (error) {
     logger.error(`Swagger setup error: ${error.message}`);
   }
