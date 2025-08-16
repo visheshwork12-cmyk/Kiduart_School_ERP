@@ -41,7 +41,7 @@ export const swaggerSpec = swaggerJSDoc(options);
 
 export const setupSwagger = (app) => {
   try {
-    // Serve Swagger JSON specification
+    // Serve Swagger JSON specification for debugging
     app.get('/api-docs/swagger.json', (req, res) => {
       res.json(swaggerSpec);
     });
@@ -53,7 +53,7 @@ export const setupSwagger = (app) => {
       swaggerUi.setup(swaggerSpec, {
         swaggerOptions: {
           persistAuthorization: true,
-          validatorUrl: null, // Disable external validator
+          validatorUrl: null,
         },
       })
     );

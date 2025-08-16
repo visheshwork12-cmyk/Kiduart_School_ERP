@@ -36,6 +36,12 @@ app.use(
   express.static(path.join(__dirname, '../node_modules/swagger-ui-dist'))
 );
 
+// Serve custom swagger-initializer.js
+app.use(
+  '/api-docs/swagger-initializer.js',
+  express.static(path.join(__dirname, './public/swagger-initializer.js'))
+);
+
 // Setup Swagger documentation
 setupSwagger(app);
 
